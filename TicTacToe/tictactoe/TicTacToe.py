@@ -109,17 +109,31 @@ class AbstractTicTacToe:
             self.gameWinnerBoard["diag"][2]["finishedGame"] += playerInput
         self.setMoves(move)
 
-    def validateBoard(self, move):
+    def validateBoard(self, move, player):
         """
-        This method is an abstract for specific validateBoard
-        implementations.
+        This method is Basic tictactoe validateBoard
+        implementation.
+        It checks the updated gameWinnerBoard and if input count for a
+        row, column or diagnoal is 3, checks if the sum of the inputs is 3 or 6
         PARAMS:
         self:current object
         move:player move tuple
+        player:Player object currently operating the game board
         RETURNS:
-        Pass
+        Boolean if current input has won the game
         """
-        pass
+        if(self.gameWinnerBoard["row"][move[0]]["inputCount"] == 3 and (self.gameWinnerBoard["row"][move[0]]["finishedGame"] in self.gameValidationSum)):
+            #print("row")
+            player.setWinner(True)
+        if(self.gameWinnerBoard["column"][move[1]]["inputCount"] == 3 and (self.gameWinnerBoard["column"][move[1]]["finishedGame"] in self.gameValidationSum)):
+            #print("column" + str(move[1]))
+            player.setWinner(True)
+        if(self.gameWinnerBoard["diag"][0]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][0]["finishedGame"] in self.gameValidationSum)):
+            #print("diag1")
+            player.setWinner(True)
+        if(self.gameWinnerBoard["diag"][2]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][2]["finishedGame"] in self.gameValidationSum)):
+            #print("diag2")
+            player.setWinner(True)
 
 class BasicTicTacToe(AbstractTicTacToe):
     def __init__(self):
@@ -133,6 +147,7 @@ class BasicTicTacToe(AbstractTicTacToe):
         AbstractTicTacToe.__init__(self)
         self.moveArray = {0:1, 1:2}
         self.validMoveActual = {0:'x', 1:'o'}
+        self.gameValidationSum = settings.SUM_TICTACTOE_BASIC
 
     def updateBoard(self, playerTurn, move, playerInput):
         """
@@ -147,6 +162,16 @@ class BasicTicTacToe(AbstractTicTacToe):
         """
         super().updateBoard(playerTurn, move, self.moveArray[playerTurn])
         self.displayBoard[move[0]][move[1]] = self.validMoveActual[playerTurn]
+
+    def getGameValidationSum(self):
+        """
+        Getter method for gameValidationSum
+        PARAMS:
+        self:current object
+        RETURNS:
+        game validation sum
+        """
+        return self.gameValidationSum
 
     def validateMove(self, playerTurn, move, moveVal):
         """
@@ -177,31 +202,6 @@ class BasicTicTacToe(AbstractTicTacToe):
         """
         return "This mode allows only 'x' and 'o' values.\nAlso, Player 1 should input 'x' and player 2 'o'"
 
-    def validateBoard(self, move, player):
-        """
-        This method is Basic tictactoe validateBoard
-        implementation.
-        It checks the updated gameWinnerBoard and if input count for a
-        row, column or diagnoal is 3, checks if the sum of the inputs is 3 or 6
-        PARAMS:
-        self:current object
-        move:player move tuple
-        RETURNS:
-        Boolean if current input has won the game
-        """
-        if(self.gameWinnerBoard["row"][move[0]]["inputCount"] == 3 and (self.gameWinnerBoard["row"][move[0]]["finishedGame"] == 3 or self.gameWinnerBoard["row"][move[0]]["finishedGame"] == 6)):
-            #print("row")
-            player.setWinner(True)
-        if(self.gameWinnerBoard["column"][move[1]]["inputCount"] == 3 and (self.gameWinnerBoard["column"][move[1]]["finishedGame"] == 3 or self.gameWinnerBoard["column"][move[1]]["finishedGame"] == 6)):
-            #print("column" + str(move[1]))
-            player.setWinner(True)
-        if(self.gameWinnerBoard["diag"][0]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][0]["finishedGame"] == 3 or self.gameWinnerBoard["diag"][0]["finishedGame"] == 6)):
-            #print("diag1")
-            player.setWinner(True)
-        if(self.gameWinnerBoard["diag"][2]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][2]["finishedGame"] == 3 or self.gameWinnerBoard["diag"][2]["finishedGame"] == 6)):
-            #print("diag2")
-            player.setWinner(True)
-
 class SumTictactoe(AbstractTicTacToe):
     def __init__(self):
         """
@@ -213,6 +213,7 @@ class SumTictactoe(AbstractTicTacToe):
         """
         AbstractTicTacToe.__init__(self)
         self.validMoveActual = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
+        self.gameValidationSum = settings.SUM_TICTACTOE_SUM
 
     def updateBoard(self, playerTurn, move, playerInput):
         """
@@ -229,6 +230,16 @@ class SumTictactoe(AbstractTicTacToe):
         super().updateBoard(playerTurn, move, playerInput)
         self.displayBoard[move[0]][move[1]] = playerInput
         self.validMoveActual[playerInput] = 1
+
+    def getGameValidationSum(self):
+        """
+        Getter method for gameValidationSum
+        PARAMS:
+        self:current object
+        RETURNS:
+        game validation sum
+        """
+        return self.gameValidationSum
 
     def validateMove(self, playerTurn, move, moveVal):
         """
@@ -259,31 +270,6 @@ class SumTictactoe(AbstractTicTacToe):
         self:current object
         """
         return "For this mode, player 1 should enter odd numbers between 1-9 and player 2 should enter even numbers between 2-8."
-
-    def validateBoard(self, move, player):
-        """
-        This method is Sum tictactoe validateBoard
-        implementation.
-        It checks the updated gameWinnerBoard and if input count for a
-        row, column or diagnoal is 3, checks if the sum of the inputs is 15
-        PARAMS:
-        self:current object
-        move:player move tuple
-        RETURNS:
-        Boolean if current input has won the game
-        """
-        if(self.gameWinnerBoard["row"][move[0]]["inputCount"] == 3 and (self.gameWinnerBoard["row"][move[0]]["finishedGame"] == 15)):
-            #print("row")
-            player.setWinner(True)
-        if(self.gameWinnerBoard["column"][move[1]]["inputCount"] == 3 and (self.gameWinnerBoard["column"][move[1]]["finishedGame"] == 15)):
-            #print("column" + str(move[1]))
-            player.setWinner(True)
-        if(self.gameWinnerBoard["diag"][0]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][0]["finishedGame"] == 15)):
-            #print("diag1")
-            player.setWinner(True)
-        if(self.gameWinnerBoard["diag"][2]["inputCount"] == 3 and (self.gameWinnerBoard["diag"][2]["finishedGame"] == 15)):
-            #print("diag2")
-            player.setWinner(True)
 
 class GetTictactoeFactory():
     def __init__(self):
@@ -327,33 +313,58 @@ class Player():
         self.name = "__NO_NAME__"
         self.playerDesignation = playerDesignation
 
-    def getPlayerInfo(self):
+    def setInfo(self, *args):
         """
-        Method to take basic user information
+        This method sets the player information
         PARAMS:
-        self:current player object
+        self:current object
+        args:Just name as of now
         RETURNS:
         Nothing
         """
-        print("Please enter your name " + self.playerDesignation + ":")
-        self.name = input()
+        self.name = args[0]
 
-    def makeMove(self):
+    def getPlayerName(self):
         """
-        Method to take input for the specific player
+        Getter method for player name
         PARAMS:
-        self:currnt player object
-        game:BasicTicTacToe or SumTictactoe object
+        self:current object
         RETURNS
-        move value input by the player
+        String player name
         """
-        print(self.name + " enters the game cell X where you want to make the move:")
-        moveX = int(input())
-        print(self.name + " enters the game cell Y where you want to make the move:")
-        moveY = int(input())
-        self.currentMove = (moveX, moveY)
-        print("Please enter the move value:")
-        self.currentMoveVal = input()
+        return self.name
+
+    def getPlayerDesignation(self):
+        """
+        Getter method for player Designation
+        PARAMS:
+        self:current object
+        RETURNS
+        String player Designation
+        """
+        return self.playerDesignation
+
+    def setCurrentMove(self, move):
+        """
+        This method sets the current move input by the player
+        PARAMS:
+        self:current object
+        move:Move tuple
+        RETURNS:
+        Nothing
+        """
+        self.currentMove = move
+
+    def setCurrentMoveVal(self, moveVal):
+        """
+        This method sets the current move value input by the player
+        PARAMS:
+        self:current object
+        move:Move Value
+        RETURNS:
+        Nothing
+        """
+        self.currentMoveVal = moveVal
 
     def getCurrentMove(self):
         """
@@ -402,9 +413,9 @@ class Player():
         PARAMS:
         self:current object
         RETURNS:
-        Nothing. Prints the winning message
+        The winning message
         """
-        print("Player " + self.name + " has won the game")
+        return "Player " + self.name + " has won the game"
 
 if(__name__ == "__main__"):
     tictactoe = GetTictactoeFactory().getTictactoeFactory("Basic")
